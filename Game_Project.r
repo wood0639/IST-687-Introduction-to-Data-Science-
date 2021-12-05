@@ -9,3 +9,7 @@ game$Month <- game1
 game$Month <- as.Date(game$Month, "%B %d %Y"); game$Month
 class(game$Month)
 
+# Clean up column names
+cnames <- c("Month","AvgPlayer","Gain","PercentGain","PeakPlayers","AppID","Game")
+colnames(game) <- cnames
+
