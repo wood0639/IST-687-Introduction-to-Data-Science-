@@ -15,3 +15,28 @@ class(game$Month)
 cnames <- c("Month","AvgPlayer","Gain","PercentGain","PeakPlayers","AppID","Game")
 colnames(game) <- cnames
 
+# What is the total number of peak players for one game?
+
+max(game$PeakPlayers)
+mean(game$PeakPlayers)
+
+gameSorted <- game[order(-game$PeakPlayers),]
+gameSorted
+game[which.max(game$PeakPlayers),]
+head(game$PeakPlayers, 15)
+
+# PUBG: BATTLEGROUNDS has the most PeakPlayers in a month January 2018 was the most at 3,236,027
+
+# Total number of PeakPlayers
+peak <- tapply(game$PeakPlayers, game$Game, sum)
+gameName <- rownames(peak)
+totalPeakPlayers <- data.frame(gameName, peak)
+summarise(totalPeakPlayers)
+
+# or use group_by
+totalPeakPlayersGroupBy =
+  game %>% group_by(Game) %>%
+  summarise(totalPeakPlayers =sum(peak),)
+  
+# Dota 2 has the most players of all with 87,132,203
+totalPeakPlayers[which.max(totalPeakPlayers$peak),]
