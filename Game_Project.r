@@ -40,3 +40,12 @@ totalPeakPlayersGroupBy =
   
 # Dota 2 has the most players of all with 87,132,203
 totalPeakPlayers[which.max(totalPeakPlayers$peak),]
+
+#For each game average # of peak players?
+#group the data by APPID and then PeakPlayers
+PPGroupBy =
+  game %>% group_by(AppID,PeakPlayers)
+#summarise the data into summary
+summary <- summarise(PPGroupBy)
+#find the average and store in variable
+average_peak_pergame <- with(summary, by(PeakPlayers, AppID, mean))
