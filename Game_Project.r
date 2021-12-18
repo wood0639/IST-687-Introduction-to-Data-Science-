@@ -12,7 +12,7 @@ game$Month <- as.Date(game$Month, "%B %d %Y"); game$Month
 class(game$Month)
 
 # Clean up column names
-cnames <- c("Month","AvgPlayer","Gain","PercentGain","PeakPlayers","AppID","Game")
+cnames <- c("Month","AvgPlayers","Gain","PercentGain","PeakPlayers","AppID","Game")
 colnames(game) <- cnames
 
 # What is the total number of peak players for one game?
@@ -49,3 +49,41 @@ PPGroupBy =
 summary <- summarise(PPGroupBy)
 #find the average and store in variable
 average_peak_pergame <- with(summary, by(PeakPlayers, AppID, mean))
+
+## Text Mining and Word Cloud
+
+library(quanteda)
+library(quanteda.textplots)
+
+
+## Top 500 and Bottom 500 performing games of November (based on percent gain)
+
+gameLast30.Top500 <- gameLast30[with(gameLast30, order(-PercentGain)),]
+gameLast30.Top500 <- gameLast30.Top500[1:500,]
+
+gameLast30.Bottom500 <- gameLast30[with(gameLast30, order(PercentGain)),]
+gameLast30.Bottom500 <- gameLast30.Bottom500[1:500,]
+
+
+## Corpus, Tokens, and Word Cloud for Top 500 (November)
+
+gameCorpus.Top <- corpus(gameLast30.Top500$Game)
+
+toks.Top <- tokens(gameCorpus.Top, remove_punct = TRUE, remove_numbers = TRUE, remove_symbols = TRUE)
+toksNoStops.Top <- tokens_select(toks.Top, pattern = stopwords("english"), selection = "remove")
+
+gameDFM.Top <- dfm(toksNoStops.Top, remove = c("Ã", "Â", "¯", "¿", "½", "¢", "®", "é", "»", "'", "ç", ">", "S", "Y", "å", "T", "¨"))
+
+gameWC.Top <- textplot_wordcloud(gameDFM.Top, min_count = 2)
+
+
+## Corpus, Tokens, and Word Cloud for Bottom 500 (November)
+
+gameCorpus.Bottom <- corpus(gameLast30.Bottom500$Game)
+
+toks.Bottom <- tokens(gameCorpus.Bottom, remove_punct = TRUE, remove_numbers = TRUE, remove_symbols = TRUE)
+toksNoStops.Bottom <- tokens_select(toks.Bottom, pattern = stopwords("english"), selection = "remove")
+
+gameDFM.Bottom <- dfm(toksNoStops.Bottom, remove = c("Ã", "Â", "¯", "¿", "½", "¢", "®", "é", "»", "'", "ç", ">", "S", "Y", "å", "T", "¨"))
+
+gameWC.Bottom <- textplot_wordcloud(gameDFM.Bottom, min_count = 2)
