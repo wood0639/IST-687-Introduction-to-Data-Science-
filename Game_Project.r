@@ -176,3 +176,22 @@ require(scales)
 p3 + scale_y_continuous(labels = comma)
 View(p3)
 
+# grouped Game by AvgPlayer and descending month. Took the first 12 lines of each
+data_new2 <- topGames %>%                                      
+  arrange (desc(Month, AvgPlayers)) %>% 
+  group_by(Game) %>%
+  slice(1:12)
+
+# ALL Football Manager games 
+# Football Manager
+FootballManager <- data_new2[903:1011,]
+FootballManager
+
+ggplot(FootballManager) +
+  aes(x=FootballManager$Month, y=FootballManager$AvgPlayers, color= FootballManager$AppID,  group = .5) +
+  geom_line() +
+  theme(axis.text.x = element_text(face= "bold.italic", color = "blue")) +
+  scale_y_continuous(breaks = c(5358,10000,20000,30000,40000,50000,60000)) +
+  labs(title = "Football Manager 2012-2022", x= "Years", y="Average Players / Month") +
+  theme(axis.text.y = element_text(face= "bold.italic", color = "blue")) +
+  scale_color_gradient(low= "green", high= "blue")
